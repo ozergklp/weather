@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Search from "./components/Search";
-import { ReactQueryDevtools, ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import Weather from "./components/Weather";
 
@@ -29,7 +28,6 @@ function App() {
       <QueryClientProvider client={queryClient} >
         
         <RouterProvider router={router} />
-        <ReactQueryDevtools />
       </QueryClientProvider>
       
 

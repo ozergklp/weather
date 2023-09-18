@@ -2,8 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Forecast from './Forecast';
-import Dates from './Dates';
+import DailyWeather from './DailyWeather';
+import Days from './NextDays/Days';
+import Forecast from './NextDays/Forecast';
 
 const apiKey = "693d84ea64b8989c77bca30ea292f3fd";
 
@@ -13,18 +14,10 @@ export default function Weather() {
     const [weather, setWeather] = useState([]);
     const { city } = useParams();
 
-    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
     const forecastWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
 
-    const today = new Date();
 
-    const { isLoading: isLoadingCurrent, error: errorCurrent, data: currentWeatherData } = useQuery(
-        ["currentWeather", city],
-        () => axios.get(currentWeatherUrl),
-        {
-            refetchOnWindowFocus: false,
-        }
-    );
+
 
     const { isLoading: isLoadingForecast, error: errorForecast, data: forecastWeatherData } = useQuery(
         ["forecastWeather", city],
@@ -34,21 +27,10 @@ export default function Weather() {
         }
     );
 
-    // Convert date string to date
-    const convertDate = (string) => {
-        return string.split(" ")[0];
-    }
-
-    // Create a formatted date
-    const convertToday = (date) => {
-        const day = date.getDate();
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1; // Adding 1 because months are zero-indexed
-        return `${year}-${month < 10 ? `0${month}` : month}-${day}`;
-    }
 
     useEffect(() => {
         if (forecastWeatherData) {
+            setWeather([]);
             const newData = forecastWeatherData.data.list.map((item) => {
                 const newDate = new Date(item.dt_txt);
                 return {
@@ -57,12 +39,17 @@ export default function Weather() {
                     year: newDate.getFullYear(),
                     month: newDate.getMonth(),
                     hour: newDate.getHours(),
-                    degree: `${(item.main.temp - 273.15).toFixed(0)}°C` // Convert Kelvin to Celsius
+                    degree: `${(item.main.temp - 273.15).toFixed(0)}°C`, // Convert Kelvin to Celsius
+                    icon : item.weather[0].icon,
                 };
             });
             setDays(newData);
-            const uniqueDates = [...new Set(newData.map((item) => item.date))];
-            setDates(uniqueDates);
+            //const uniqueDates = [...new Set(newData.map((item) => item.date))];
+            const uniqueDates = new Set(newData.map((item) => JSON.stringify({ date: item.date, day: item.day })));
+            const uniqueDateObjects = Array.from(uniqueDates).map((str) => JSON.parse(str));
+            console.log("string: ",uniqueDates)
+            console.log("object: ", uniqueDateObjects)
+            setDates(uniqueDateObjects);
         }
     }, [forecastWeatherData]);
 
@@ -74,60 +61,25 @@ export default function Weather() {
     }
 
     // Render loading states
-    if (isLoadingCurrent || isLoadingForecast) {
+    if ( isLoadingForecast) {
         return (
             <h2 className='text-center'>Loading...</h2>
         );
     }
 
-    if (errorCurrent || errorForecast) {
+    if ( errorForecast) {
         return (
-            <div className='text-center'>
-                {errorCurrent && <h2>{errorCurrent.message}</h2>}
+            <h2 className='text-center'>
                 {errorForecast && <h2>{errorForecast.message}</h2>}
-            </div>
+            </h2>
         );
     }
 
     return (
-        <main>
-            {currentWeatherData && (
-                <section>
-                    <section>
-                        <p>{getShortDayName(today.getDay())} {today.getDate()}</p>
-                        <p>Today in {currentWeatherData.data.name}, {currentWeatherData.data.sys.country}</p>
-                    </section>
-                    <p>{currentWeatherData.data.weather[0].main}</p>
-                    <section>
-                        <p>{`${(currentWeatherData.data.main.feels_like - 273.15).toFixed(0)}°C`}</p>
-                        <p>Feels like {`${(currentWeatherData.data.main.temp - 273.15).toFixed(0)}°C`}</p>
-                    </section>
-                </section>
-            )}
-
-            <Dates dates={dates} handleWeather={handleWeather} />
-            <Forecast weather={weather} />
+        <main className='mt-7 '>
+                <DailyWeather city={city} />
+                <Days daysAndDates={dates}  handleWeather={handleWeather} />
+                <Forecast weather={weather} />
         </main>
     );
-}
-
-function getShortDayName(day) {
-    switch (day) {
-        case 0:
-            return "Sun";
-        case 1:
-            return "Mon";
-        case 2:
-            return "Tue";
-        case 3:
-            return "Wed";
-        case 4:
-            return "Thu";
-        case 5:
-            return "Fri";
-        case 6:
-            return "Sat";
-        default:
-            return "Invalid Day";
-    }
 }

@@ -6,6 +6,11 @@ export default {
   ],
   theme: {
     extend: {},
+    fontSize: {
+      small: '5rem',
+      large: '17rem',
+      search: '1.5rem',
+    }
   },
   plugins: [],
 }

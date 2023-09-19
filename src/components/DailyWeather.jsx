@@ -40,7 +40,7 @@ export default function DailyWeather({city}) {
     return (
         <>
             {currentWeatherData && (
-                <section className='flex flex-col sm:flex-row items-center justify-center mb-3 sm:mb-0 text-center text-slate-900 flex-1'>
+                <section className='flex flex-col sm:flex-row items-center justify-center mb-3 sm:mb-0 text-center sm:mr-24 text-slate-900 flex-1'>
                     <section>
                         <p>{ShortDay(today.getDay())} {today.getDate()}</p>
                         <p>Today in {currentWeatherData.data.name}, {currentWeatherData.data.sys.country}</p>

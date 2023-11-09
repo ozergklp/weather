@@ -13,6 +13,7 @@ WeatherApp offers an array of features to enhance your movie exploration:
 - **Current Weather**: Get real-time weather conditions for the specified city..
 - **Weather Conditions with Icons:**: Weather conditions are represented with intuitive icons (e.g., sunny, cloudy, rainy).
 - **Date and Day**: Each forecast entry includes the date and day of the week for easy reference.
+- **Responsive Design**: Enjoy a seamless experience on various devices, from desktops to smartphones.
 
 ## Technologies Used
 

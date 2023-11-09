@@ -46,6 +46,5 @@ To get started with the project, follow these steps:
 
    ```sh
    npm run dev 
-# Weather App
-https://weather-six-gilt.vercel.app
+
 

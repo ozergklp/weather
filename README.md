@@ -1,4 +1,4 @@
-#WeatherApp - Your Weather Information App
+# WeatherApp - Your Weather Information App
 
 WeatherApp, powered by React, delivers detailed weather updates for cities worldwide. Users can search for any city to access the 3-hourly weather forecast for the next 6 days, including current conditions. Intuitive icons simplify weather representation for quick understanding.
 
